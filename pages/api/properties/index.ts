@@ -1,4 +1,4 @@
-import { PROPERTYLISTINGSAMPLE } from "@/constants";
+import { getProperties } from "@/lib/properties";
 import type { PropertyProps } from "@/interfaces";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -14,5 +14,5 @@ export default function handler(
   }
 
   res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
-  return res.status(200).json(PROPERTYLISTINGSAMPLE);
+  return res.status(200).json(getProperties());
 }

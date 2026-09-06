@@ -1,52 +1,7 @@
-export interface CardProps {
-    title: string;
-    image: string;
-    price: number;
-}
-
-// button props
-export interface ButtonProps {
-    label: string;
-    onClick?: () => void;
-}
-// address interface
-export interface Address {
-    state: string;
-    city: string;
-    country: string;
-}
-// offers interface
-export interface Offers {
-    bed: string;
-    shower: string;
-    occupants: string;
-}
-//  property props
-export interface PropertyProps {
-    id: string;
-    description?: string;
-    name: string;
-    address: Address;
-    rating: number;
-    category: string[];
-    price: number;
-    offers: Offers;
-    image: string;
-    discount?: string;
-}
-
-export interface PropertyDetailProps {
-    property: PropertyProps;
-}
-
-// review interface
-export interface Review {
-    name: string;
-    avatar: string;
-    rating: number;
-    comment: string;
-}
-
-export interface ReviewSectionProps {
-    reviews: Review[];
-}
+export type PropertyType = "Apartment" | "Cottage" | "Lodge" | "Villa";
+export interface PropertyImage { src: string; alt: string }
+export interface Address { destination: string; county: string; country: "Kenya" }
+export interface PropertyProps { id:string; name:string; description:string; address:Address; propertyType:PropertyType; rating:number; price:number; bedrooms:number; bathrooms:number; maxGuests:number; amenities:string[]; images:PropertyImage[] }
+export interface PropertyDetailProps { property: PropertyProps }
+export interface CardProps { title:string; image:string; price:number }
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> { label:string }

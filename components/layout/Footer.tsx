@@ -1,14 +1,2 @@
-export default function Footer() {
-  return (
-    <footer className="mt-12 border-t bg-gray-50">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-gray-600 sm:px-6 md:flex-row md:items-end md:justify-between lg:px-8">
-        <div>
-          <p className="text-lg font-semibold text-gray-950">StayNia</p>
-          <p>Find trusted stays across Kenya</p>
-          <p className="mt-1">An independent property-browsing application progressing toward a marketplace.</p>
-        </div>
-        <p>&copy; {new Date().getFullYear()} StayNia.</p>
-      </div>
-    </footer>
-  );
-}
+import Link from"next/link";
+export default function Footer(){return <footer className="mt-auto border-t border-slate-200 bg-slate-950 text-slate-200"><div className="page-shell grid gap-8 py-10 sm:grid-cols-2"><div><p className="text-xl font-bold text-white">StayNia</p><p>Find trusted stays across Kenya</p><p className="mt-3 max-w-lg text-sm text-slate-400">An independent demonstration property-browsing application progressing toward a production marketplace.</p></div><nav aria-label="Footer navigation" className="flex flex-wrap content-start gap-x-5 gap-y-3">{[["About","/about"],["Help","/help"],["Privacy (draft)","/privacy"],["Terms (draft)","/terms"]].map(([l,h])=><Link className="hover:text-white" key={h} href={h}>{l}</Link>)}</nav></div></footer>}

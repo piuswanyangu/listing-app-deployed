@@ -1,4 +1,4 @@
-import { PROPERTYLISTINGSAMPLE } from "@/constants";
+import { getPropertyById } from "@/lib/properties";
 import type { PropertyProps } from "@/interfaces";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -14,7 +14,7 @@ export default function handler(
   }
 
   const id = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
-  const property = PROPERTYLISTINGSAMPLE.find((item) => item.id === id);
+  const property = id ? getPropertyById(id) : undefined;
 
   if (!property) {
     return res.status(404).json({ error: "Property not found" });

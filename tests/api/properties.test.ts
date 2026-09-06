@@ -42,7 +42,7 @@ describe("GET /api/properties", () => {
 
     const { statusCode, body } = result();
     expect(statusCode).toBe(200);
-    expect(body).toEqual(expect.arrayContaining([expect.objectContaining({ id: "villa-ocean-breeze" })]));
+    expect(body).toEqual(expect.arrayContaining([expect.objectContaining({ id: "nairobi-garden-apartment" })]));
   });
 
   it("rejects unsupported methods", () => {
@@ -57,10 +57,10 @@ describe("GET /api/properties", () => {
 describe("GET /api/properties/[id]", () => {
   it("returns a fixture property by ID", () => {
     const { response, result } = createResponse();
-    getProperty(createRequest("GET", { id: "luxury-safari-lodge" }), response);
+    getProperty(createRequest("GET", { id: "nairobi-garden-apartment" }), response);
 
     expect(result().statusCode).toBe(200);
-    expect(result().body).toEqual(expect.objectContaining({ id: "luxury-safari-lodge", name: "Luxury Safari Lodge" }));
+    expect(result().body).toEqual(expect.objectContaining({ id: "nairobi-garden-apartment", name: "Nairobi Garden Apartment" }));
   });
 
   it("returns 404 for an unknown ID", () => {
@@ -72,7 +72,7 @@ describe("GET /api/properties/[id]", () => {
 
   it("rejects unsupported methods", () => {
     const { response, result } = createResponse();
-    getProperty(createRequest("DELETE", { id: "villa-ocean-breeze" }), response);
+    getProperty(createRequest("DELETE", { id: "nairobi-garden-apartment" }), response);
 
     expect(result().statusCode).toBe(405);
     expect(result().headers.get("Allow")).toBe("GET");

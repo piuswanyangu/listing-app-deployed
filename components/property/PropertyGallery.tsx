@@ -1,0 +1,2 @@
+import Image from "next/image";import type{PropertyImage}from"@/interfaces";
+export default function PropertyGallery({images}:{images:PropertyImage[]}){return <div className="grid gap-3 sm:grid-cols-2">{images.map((image,i)=><div key={`${image.src}-${i}`} className={i===0?"relative min-h-72 sm:col-span-2":"relative min-h-52"}><Image src={image.src} alt={image.alt} fill priority={i===0} sizes="(max-width: 640px) 100vw, 50vw" className="rounded-xl object-cover"/></div>)}</div>}

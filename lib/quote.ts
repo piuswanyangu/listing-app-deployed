@@ -1,0 +1,3 @@
+const DATE_RE=/^\d{4}-\d{2}-\d{2}$/;
+export function calendarDays(start:string,end:string){if(!DATE_RE.test(start)||!DATE_RE.test(end))return 0;const[sy,sm,sd]=start.split("-").map(Number),[ey,em,ed]=end.split("-").map(Number);return Math.round((Date.UTC(ey,em-1,ed)-Date.UTC(sy,sm-1,sd))/86400000)}
+export function validateQuote(checkIn:string,checkOut:string,guests:number,maxGuests:number,today:string){if(!checkIn||!checkOut)return"Choose check-in and check-out dates.";if(checkIn<today)return"Check-in cannot be in the past.";if(calendarDays(checkIn,checkOut)<=0)return"Check-out must be after check-in.";if(!Number.isInteger(guests)||guests<1||guests>maxGuests)return`Guests must be between 1 and ${maxGuests}.`;return null}

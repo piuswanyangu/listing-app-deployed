@@ -1,0 +1,2 @@
+import Seo from"./Seo";import Notice from"./Notice";import type{ReactNode}from"react";
+export default function InfoPage({title,description,path,children,noIndex=false}:{title:string;description:string;path:string;children:ReactNode;noIndex?:boolean}){return <><Seo title={`${title} | StayNia`} description={description} path={path} noIndex={noIndex}/><main className="page-shell py-12"><Notice/><article className="mt-8 max-w-3xl"><h1 className="text-4xl font-black">{title}</h1><div className="mt-5 space-y-5 leading-7 text-slate-700">{children}</div></article></main></>}

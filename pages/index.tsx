@@ -1,59 +1,30 @@
-import Head from "next/head";
-import { useEffect, useState } from "react";
-
+import type { GetStaticProps } from "next";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import Seo from "@/components/common/Seo";
+import Notice from "@/components/common/Notice";
+import DiscoveryControls from "@/components/discovery/DiscoveryControls";
 import PropertyCard from "@/components/property/PropertyCard";
 import type { PropertyProps } from "@/interfaces";
+import { DEFAULT_FILTERS, filterProperties, filtersFromQuery, filtersToQuery, type Filters } from "@/lib/discovery";
+import { getProperties } from "@/lib/properties";
 
-type LoadState = "loading" | "success" | "error";
-
-export default function Home() {
-  const [properties, setProperties] = useState<PropertyProps[]>([]);
-  const [loadState, setLoadState] = useState<LoadState>("loading");
-
+export default function Home({ properties }: { properties: PropertyProps[] }) {
+  const router = useRouter();
+  const [filters, setFilters] = useState<Filters>(() => filtersFromQuery(router.query));
   useEffect(() => {
-    const controller = new AbortController();
-
-    async function fetchProperties() {
-      try {
-        const response = await fetch("/api/properties", { signal: controller.signal });
-        if (!response.ok) throw new Error(`Property request failed with ${response.status}`);
-
-        const data: PropertyProps[] = await response.json();
-        setProperties(data);
-        setLoadState("success");
-      } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") return;
-        console.error("Unable to load demo properties", error);
-        setLoadState("error");
-      }
-    }
-
-    void fetchProperties();
-    return () => controller.abort();
-  }, []);
-
-  return (
-    <>
-      <Head>
-        <title>StayNia | Find trusted stays across Kenya</title>
-        <meta name="description" content="Explore demo accommodation listings with StayNia, a property-browsing platform initially focused on Kenya." />
-      </Head>
-      <main className="mx-auto min-h-screen max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="mb-8 max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-indigo-700">Demo listings</p>
-          <h1 className="mt-2 text-3xl font-bold text-gray-950 sm:text-4xl">Find trusted stays across Kenya</h1>
-          <p className="mt-3 text-gray-600">StayNia is progressing toward a modern accommodation marketplace for Kenya and, in the future, the wider African region.</p>
-        </section>
-
-        {loadState === "loading" && <p role="status" aria-live="polite" className="text-gray-600">Loading demo properties…</p>}
-        {loadState === "error" && <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">We could not load the demo properties. Please refresh the page and try again.</div>}
-        {loadState === "success" && properties.length === 0 && <p role="status" className="rounded-lg border border-gray-200 p-4 text-gray-600">No demo properties are available right now.</p>}
-        {loadState === "success" && properties.length > 0 && (
-          <section aria-label="Demo properties" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property) => <PropertyCard key={property.id} property={property} />)}
-          </section>
-        )}
-      </main>
-    </>
-  );
+    const sync = (url: string) => {
+      const params = new URL(url, "http://staynia.local").searchParams;
+      setFilters(filtersFromQuery(Object.fromEntries(params.entries())));
+    };
+    router.events.on("routeChangeComplete", sync);
+    return () => router.events.off("routeChangeComplete", sync);
+  }, [router.events]);
+  const results = useMemo(() => filterProperties(properties, filters), [properties, filters]);
+  function update(next: Filters) {
+    setFilters(next);
+    void router.push({ pathname: "/", query: filtersToQuery(next) }, undefined, { shallow: true });
+  }
+  return <><Seo title="StayNia | Find trusted stays across Kenya" description="Explore sample accommodation listings across Kenya on the StayNia demonstration platform."/><main><section className="hero"><div className="page-shell py-16 sm:py-24"><p className="eyebrow">Kenya-first accommodation discovery</p><h1>Find trusted stays across Kenya</h1><p>Explore how StayNia can make discovering accommodation clearer and simpler as the platform progresses toward a marketplace.</p></div></section><div className="page-shell py-8"><Notice/><div className="mt-8"><DiscoveryControls value={filters} onChange={update} onClear={() => update(DEFAULT_FILTERS)}/></div><p className="my-6 font-semibold" role="status" aria-live="polite">{results.length} demo {results.length === 1 ? "stay" : "stays"} found</p>{results.length ? <section aria-label="Demo stays" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{results.map(p => <PropertyCard key={p.id} property={p}/>)}</section> : <div className="empty-state"><h2>No demo stays match</h2><p>Adjust or clear your filters to see more sample properties.</p></div>}</div></main></>;
 }
+export const getStaticProps: GetStaticProps<{ properties: PropertyProps[] }> = async () => ({ props: { properties: getProperties() } });
