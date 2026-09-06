@@ -1,35 +1,4 @@
-// import { PROPERTYLISTINGSAMPLE } from "@/constants";
-import { useRouter } from "next/router";
-import axios from "axios";
-import  PropertyDetail from '@/components/property/PropertyDetail';
-import { useEffect, useState } from "react";
-
-export default function PropertyPage() {
-   const router = useRouter();
-   const { id } = router.query;
-   const [ property, setProperty] = useState(null);
-   const [loading, setLoading] = useState(true)
-
-   useEffect(() => {
-    const fetchProperty = async () => {
-        if(!id) return;
-        try {
-            const response = await axios.get(`/api/properties/${id}`)
-            setProperty(response.data)
-        } catch (error) {
-            console.error("Error fetching property details", error)
-        } finally {
-            setLoading(false)
-        }
-    };
-
-    fetchProperty()
-   }, [id]);
-   if(loading){
-    return <p>Loading...</p>
-   }
-   if(!property) {
-    return <p>Property not found</p>
-   }
-    return <PropertyDetail property={property}/>
-}
+import type{GetStaticPaths,GetStaticProps}from"next";import Seo from"@/components/common/Seo";import PropertyDetail from"@/components/property/PropertyDetail";import type{PropertyProps}from"@/interfaces";import{getProperties,getPropertyById}from"@/lib/properties";
+export default function PropertyPage({property,related}:{property:PropertyProps;related:PropertyProps[]}){return <><Seo title={`${property.name} demo | StayNia`} description={property.description} path={`/property/${property.id}`} noIndex/><PropertyDetail property={property} related={related}/></>}
+export const getStaticPaths:GetStaticPaths=async()=>({paths:getProperties().map(p=>({params:{id:p.id}})),fallback:false});
+export const getStaticProps:GetStaticProps=async({params})=>{const p=getPropertyById(String(params?.id));if(!p)return{notFound:true};return{props:{property:p,related:getProperties().filter(x=>x.id!==p.id&&x.propertyType===p.propertyType).slice(0,3)}}};
