@@ -1,215 +1,158 @@
-📘 ALX Listing App – README.md
-# 🏡 ALX Listing App
+# StayNia
 
-A modern Airbnb-style listing application built as part of the ALX Software Engineering program.  
-This milestone focuses on **scaffolding the project**, creating **reusable components**, establishing a **scalable folder structure**, and using powerful modern tools like **Next.js**, **TypeScript**, **TailwindCSS**, and **ESLint**.
+**Find trusted stays across Kenya**
 
----
+StayNia is an independently developed accommodation discovery and booking platform, initially focused on Kenya and designed for future expansion across Africa. The repository currently provides a property-browsing application backed by clearly labelled fixture data. It is progressing toward production readiness; it is not yet a production marketplace.
 
-## 🚀 Project Overview
+## Current capabilities
 
-The **ALX Listing App** serves as the foundation for a full property listing platform.  
-This milestone includes:
+- Browse responsive demo property cards.
+- Open a property detail page through a stable property ID.
+- Consume read-only fixture-backed property APIs.
+- Distinguish loading, empty, error, success, and not-found states.
+- Preview a local-only contact form that sends no information.
+- Run automated API handler tests, TypeScript checks, ESLint, and a production build.
 
-- Setting up a production-ready Next.js project.
-- Structuring folders for scalability and clean architecture.
-- Implementing reusable UI components (e.g., `Card`, `Button`).
-- Creating TypeScript interfaces for type safety and maintainability.
-- Organizing assets for easy usage.
-- Ensuring code quality via ESLint.
-- Connecting the project setup to the given Figma design.
+The catalogue is demonstration data. Availability, reservations, user accounts, host verification, payment processing, and completed bookings are not implemented.
 
-This project represents the "starting point" for building a complete real-world application.
+## Architecture and technology
 
----
+StayNia uses the Next.js Pages Router:
 
-## 🎯 Learning Objectives
+```text
+pages/                 Page and API route entry points
+components/            Layout, property, booking, and reusable UI components
+constants/             Fixture property catalogue
+interfaces/            Shared TypeScript contracts
+styles/                Tailwind CSS global entry point
+public/                Static assets
+tests/                  API handler tests
+```
 
-By completing this milestone, you will:
+The browser loads the listing or detail page, requests data from a same-origin Next.js API route, and renders the result with React components. The API reads only from the in-memory fixture catalogue; there is no database or write endpoint.
 
-- Scaffold a modern Next.js project using best practices.
-- Use **TypeScript** for type-safe, scalable code.
-- Configure and apply **TailwindCSS** for styling responsive UI.
-- Create reusable **React components** aligned with professional standards.
-- Manage project assets and constants cleanly.
-- Understand project structure for long-term maintainability.
-- Work from a provided **Figma mockup** to rebuild UI components.
+Major technologies:
 
----
+- Next.js 16 with the Pages Router
+- React 19
+- TypeScript in strict mode
+- Tailwind CSS 4
+- ESLint with Next.js Core Web Vitals rules
+- Vitest for API handler tests
 
-## 🧰 Tech Stack
+## Requirements
 
-- **Next.js 13+** (App Router)
-- **React 18**
-- **TypeScript**
-- **TailwindCSS**
-- **ESLint**
-- Node.js 16+
+- Node.js 20.9 or newer
+- npm 10 or newer
 
----
+Use a current Node.js LTS release for routine development and deployment.
 
-## 📁 Folder Structure
+## Local setup
 
-Below is the recommended project structure:
-
-
-
-alx-listing-app/
-│
-├── app/
-│ ├── layout.tsx # Root layout
-│ └── page.tsx # Home page using reusable components
-│
-├── components/
-│ ├── Button.tsx # Reusable button component
-│ └── Card.tsx # Reusable card component
-│
-├── interfaces/
-│ └── index.ts # TypeScript interfaces (CardProps, ButtonProps, etc.)
-│
-├── constants/
-│ └── index.ts # Global constants for the app
-│
-├── public/
-│ └── assets/ # Images, SVGs and icons for UI
-│
-├── styles/
-│ └── globals.css # Tailwind base styles
-│
-├── tailwind.config.js # Tailwind configuration
-├── tsconfig.json # TypeScript configuration
-├── package.json
-└── README.md
-
-
----
-
-## 🛠 Installation & Setup
-
-### 1. **Clone the repository**
 ```bash
-git clone https://github.com/piuswanyangu/alx-listing-app.git
-cd alx-listing-app
-
-2. Install dependencies
-npm install
-
-3. Run the development server
+git clone https://github.com/piuswanyangu/listing-app-deployed.git
+cd listing-app-deployed
+npm ci
 npm run dev
+```
 
+Open [http://localhost:3000](http://localhost:3000).
 
-The app will be live at:
-👉 http://localhost:3000
+The local directory and Git remote retain their existing names. See the repository-renaming instructions below if you control the remote and want them to match the StayNia package name.
 
-🧱 Reusable Components
-✔ Card Component
+## Environment variables
 
-Displays a property listing (image, title, price).
+Phase 1 requires no environment variables and no external services. Do not add secrets to the repository. Future integrations should be documented in an `.env.example` containing names and safe placeholders only.
 
-✔ Button Component
+## Commands
 
-A standard styled button using TailwindCSS.
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm start` | Serve an existing production build |
+| `npm run typecheck` | Run strict TypeScript checks without emitting files |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run the Vitest suite once |
 
-🧩 TypeScript Interfaces
+## Fixture API
 
-All reusable interfaces are stored inside:
+### `GET /api/properties`
 
-interfaces/index.ts
+Returns the complete demo property array.
 
+### `GET /api/properties/:id`
+
+Returns one demo property with the requested stable ID. Unknown IDs return:
+
+```json
+{
+  "error": "Property not found"
+}
+```
+
+Both endpoints are read-only. Unsupported methods return HTTP 405 and an `Allow: GET` header.
 
 Example:
 
-export interface CardProps {
-  title: string;
-  image: string;
-  price: number;
-}
+```bash
+curl http://localhost:3000/api/properties
+curl http://localhost:3000/api/properties/luxury-safari-lodge
+```
 
-export interface ButtonProps {
-  label: string;
-  onClick?: () => void;
-}
+## Testing and verification
 
+Run the checks independently so a failure is visible:
 
-This ensures consistent typing across components.
+```bash
+npm ci
+npm audit --omit=dev
+npm run typecheck
+npm run lint
+npm test
+npm run build
+```
 
-🎨 TailwindCSS Configuration
+For a manual journey check, start the application, open the listing page, select a property card, and confirm that its detail page matches the corresponding API response.
 
-Tailwind is fully integrated using:
+## Current limitations
 
-import "@tailwindcss"
+- Properties are fixtures and currently include locations outside the initial Kenya focus.
+- No database, migrations, or durable storage.
+- No authentication, authorization, profiles, or host workflows.
+- No availability engine, reservation locking, or booking write API.
+- No payment collection; StayNia must eventually use provider-hosted or tokenized payment fields.
+- No production monitoring, structured server logging, rate limiting, backups, or recovery process.
+- No CI/CD workflow or checked-in infrastructure configuration.
+- External fixture images have not yet been migrated to a controlled asset pipeline.
 
+## Production-readiness roadmap
 
-The tailwind.config.js is optimized to scan:
+1. Replace or curate fixtures with Kenya-focused, licensed demonstration content.
+2. Define property, availability, user, and booking domain models.
+3. Add validated persistence with migrations and deterministic seeds.
+4. Add authentication and role-based authorization.
+5. Implement concurrency-safe availability and idempotent booking creation.
+6. Integrate a hosted or tokenized payment provider without handling raw card details.
+7. Add integration and end-to-end tests, CI/CD, observability, rate limits, security headers, backups, restore exercises, and rollback procedures.
+8. Complete accessibility, privacy, performance, and threat-model reviews.
 
-./app/**/*.{js,ts,jsx,tsx}
-./components/**/*.{js,ts,jsx,tsx}
+## Renaming the repository
 
-🖼 Assets
+The npm package is named `staynia`. Renaming the local directory or hosted repository is intentionally outside application code changes.
 
-All assets (images, icons, illustrations) are stored in:
+After renaming the repository to `staynia` in the hosting provider:
 
-public/assets/
+```bash
+git remote set-url origin https://github.com/piuswanyangu/staynia.git
+cd ..
+mv listing-app-deployed staynia
+cd staynia
+git remote -v
+```
 
+On PowerShell, replace the `mv` line with:
 
-This ensures clean imports like:
-
-<img src="/assets/house.jpeg" />
-
-
-or using Next.js optimized <Image />.
-
-📐 Figma Mockup
-
-This milestone also involves translating UI elements from the provided Figma design into reusable components using TailwindCSS.
-
-The focus is on:
-
-Layout structure
-
-Consistent spacing
-
-Typography
-
-Responsive component behavior
-
-🎯 Key Best Practices Followed
-
-Modular folder organization
-
-Reusable, isolated components
-
-Type safety with TypeScript
-
-Clear naming conventions
-
-Separation of concerns
-
-Consistent asset management
-
-ESLint enforced code quality
-
-📦 Production Readiness
-
-This project is structured for future expansion, including:
-
-Authentication
-
-Property listing pages
-
-Filters & search
-
-Backend integration
-
-Database support (e.g., PostgreSQL)
-
-API routes
-
-Deployment to Vercel
-
-👨‍💻 Author
-
-Pius Wanyangu
-ALX Software Engineering Student
-Backend Developer • Full-Stack Learner
-Email: ndubipius96@gmail.com
+```powershell
+Rename-Item -LiteralPath listing-app-deployed -NewName staynia
+```

@@ -1,42 +1,22 @@
-import React from "react";
+import Link from "next/link";
 
-const Header: React.FC = () => {
-    return (
-        <header className="bg-white border-b">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-6">
-                    {/* logo */}
-                    <div className="flex items-center space-x-3">
-                        <a href="" className="flex items-center">
-                            <span className="inline-block w-10 h-10 bg-linear-to-br from-indigo-600 to-pink-500 rounded-md mr-2" aria-hidden/>
-                            <span className=" font-semibold text-xl">LuxStay</span>
-                        </a>
+export default function Header() {
+  return (
+    <header className="border-b bg-white">
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+        <Link href="/" className="flex items-center rounded-md focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-300">
+          <span className="mr-3 inline-block h-10 w-10 rounded-md bg-linear-to-br from-indigo-600 to-emerald-500" aria-hidden="true" />
+          <span>
+            <span className="block text-xl font-bold text-gray-950">StayNia</span>
+            <span className="block text-xs text-gray-600">Find trusted stays across Kenya</span>
+          </span>
+        </Link>
 
-                        {/* navbar */}
-                        <nav className=" hidden sm:flex space-x-4 text-sm text-gray-600">
-                            <a className="hover: text-gray-900" href="#">Rooms</a>
-                            <a className="hover: text-gray-900" href="#">Villas</a>
-                            <a className="hover: text-gray-900" href="#">Cabins</a>
-                            <a className="hover: text-gray-900" href="#">Safari</a>
-                        </nav>
-                    </div>
-
-                    {/* search and auth */}
-                    <div className="flex-1 flex justify-center pc-4">
-                        <label htmlFor="search" className="sr-only">Search properties</label>
-                        <div className="w-full max-w-md">
-                            <input type="search" id="search" placeholder="Search city, state or property name..." className=" w-full border rounded-full px-4 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 " aria-label="Search property" />
-
-                        </div>
-                    </div>
-
-                    <div className="flex items-center space-x-3">
-                        <a className="text-sm px-3 py-1 rounded-md hover:bg-gray-50" href="#">Sign in</a>
-                        <a className="bg-indigo-600 text-white px-4 py-1.5 rounded-md text-sm hover:bg-indigo-700" href="#">Sign up</a>
-                    </div>
-                </div>
-            </div>
-        </header>
-    )
+        <nav aria-label="Primary navigation" className="flex flex-wrap items-center gap-4 text-sm font-medium">
+          <Link className="text-gray-700 hover:text-indigo-700" href="/">Browse demo stays</Link>
+          <Link className="text-gray-700 hover:text-indigo-700" href="/booking">Booking preview</Link>
+        </nav>
+      </div>
+    </header>
+  );
 }
-export default Header

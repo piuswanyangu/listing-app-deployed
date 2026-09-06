@@ -1,46 +1,18 @@
-import axios from "axios";
-import React, { useState } from "react"; // Added React to the import
+import BookingForm from "@/components/booking/BookingForm";
+import Head from "next/head";
 
-export default function BookingForm(){
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    cardNumber: "",
-    expirationDate: "",
-    cvv: "",
-    billingAddress: "",
-  });
-
-  const [loading, setLoading] = useState(false);
-  // 1. Type the error state so it accepts strings
-  const [error, setError] = useState<string | null>(null);
-
-  // 2. Change 'e.' to 'e:' (colon is for type assignment)
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.post("/api/bookings", formData);
-      alert("Booking confirmed");
-    } catch (err) {
-      // 3. Set a string message here
-      setError("Failed to submit booking");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function BookingPage() {
   return (
-    <form onSubmit={handleSubmit}>
-      {/* form fields for booking details */}
-      <button type="submit" disabled={loading} className="bg-blue-600 text-white p-2">
-        {loading ? "Processing..." : "Confirm & Pay"}
-      </button>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
-    </form>
+    <>
+      <Head>
+        <title>Booking preview | StayNia</title>
+        <meta name="description" content="Preview StayNia's non-transactional booking enquiry form." />
+      </Head>
+      <main className="mx-auto min-h-screen max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold">Booking preview</h1>
+        <p className="mt-3 text-gray-600">Bookings, availability checks, and payments are not enabled. This form validates locally and sends no information.</p>
+        <BookingForm />
+      </main>
+    </>
   );
 }

@@ -1,31 +1,24 @@
-const OrderSummary: React.FC<{bookingDetails: any}> = ({ bookingDetails }) => (
-    <div className="bg-white p-6 shadow-md rounded-lg">
-        <h2 className="text-xl font-semibold">Review Order Details</h2>
-        <div className="flex items-center mt-4">
-            <img src="https://example.com/property.jpg" alt="Property" className="w-32 h-32 object-cover rounded-md" />
-            <div className="ml-4">
-                <h3 className="text-lg font-semibold">{bookingDetails.propertyName}</h3>
-                <p className="text-sm text-gray-500">4.76 (345 reviews)</p>
-                <p className="text-sm text-gray-500"> {bookingDetails.startDate} . {bookingDetails.totalNights} Nights</p>
-            </div>
-        </div>
+interface BookingPreview {
+  propertyName: string;
+  startDate: string;
+  totalNights: number;
+  price: number;
+  bookingFee: number;
+}
 
-        {/* Price breakdown */}
-        <div className="mt-6">
-            <div className="flex justify-between ">
-                <p>Booking Fee</p>
-                <p>${bookingDetails.price}</p>
-            </div>
-            <div className="flex justify-between mt-2">
-                <p>Subtotal</p>
-                <p>${bookingDetails.price}</p>
-            </div>
-            <div className="flex justify-between mt-2 font-semibold">
-                <p>Grand Total</p>
-                <p>${bookingDetails.bookingFee + bookingDetails.price}</p>
-            </div>
-        </div>
+const OrderSummary: React.FC<{ bookingDetails: BookingPreview }> = ({ bookingDetails }) => (
+  <div className="rounded-lg bg-white p-4 shadow-md sm:p-6">
+    <h2 className="text-xl font-semibold">Preview details</h2>
+    <div className="mt-4">
+      <h3 className="text-lg font-semibold">{bookingDetails.propertyName}</h3>
+      <p className="text-sm text-gray-500">{bookingDetails.startDate} · {bookingDetails.totalNights} nights</p>
     </div>
-)
+    <dl className="mt-6 space-y-2">
+      <div className="flex justify-between"><dt>Booking fee</dt><dd>${bookingDetails.bookingFee}</dd></div>
+      <div className="flex justify-between"><dt>Subtotal</dt><dd>${bookingDetails.price}</dd></div>
+      <div className="flex justify-between font-semibold"><dt>Preview total</dt><dd>${bookingDetails.bookingFee + bookingDetails.price}</dd></div>
+    </dl>
+  </div>
+);
 
 export default OrderSummary;

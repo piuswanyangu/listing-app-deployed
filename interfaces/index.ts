@@ -1,9 +1,4 @@
-// card props
-
-import ReviewSection from "@/components/property/ReviewSection";
-import { ReactNode } from "react";
-
-export interface CardProps{
+export interface CardProps {
     title: string;
     image: string;
     price: number;
@@ -12,7 +7,7 @@ export interface CardProps{
 // button props
 export interface ButtonProps {
     label: string;
-    onClick: () => void
+    onClick?: () => void;
 }
 // address interface
 export interface Address {
@@ -28,7 +23,8 @@ export interface Offers {
 }
 //  property props
 export interface PropertyProps {
-    description?: ReactNode;
+    id: string;
+    description?: string;
     name: string;
     address: Address;
     rating: number;
@@ -44,7 +40,7 @@ export interface PropertyDetailProps {
 }
 
 // review interface
-interface Review {
+export interface Review {
     name: string;
     avatar: string;
     rating: number;

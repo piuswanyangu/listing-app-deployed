@@ -1,14 +1,18 @@
 
 import React from "react";
+import Link from "next/link";
 import type { PropertyProps } from "@/interfaces";
 
 const PropertyCard: React.FC<{ property: PropertyProps }> = ({ property }) => {
   const { name, image, price, rating, address, discount } = property;
 
   return (
-    <article className="bg-white shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
+    <article className="h-full overflow-hidden rounded-lg bg-white shadow-sm transition-shadow hover:shadow-md">
+      <Link href={`/property/${property.id}`} className="flex h-full flex-col focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-300">
       <div className="relative">
-        <img src={image} alt={`Photo of ${name}`} loading="lazy" className="w-full h-48 object-cover sm:h-40 md:h-44"/>
+        {/* External fixture images are not yet restricted to a production allowlist. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={image} alt={`Demo accommodation: ${name}`} loading="lazy" className="h-48 w-full object-cover sm:h-52"/>
         {discount ? (
           <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded">
             {discount}% OFF
@@ -36,6 +40,7 @@ const PropertyCard: React.FC<{ property: PropertyProps }> = ({ property }) => {
           </div>
         </div>
       </div>
+      </Link>
     </article>
   );
 };

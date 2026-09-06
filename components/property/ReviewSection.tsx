@@ -1,55 +1,37 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-// 1. Define the shape of a Review object
 interface Review {
   id: string | number;
   comment: string;
-  
 }
 
-// 2. Define the props for this component
-interface ReviewSectionProps {
-  propertyId: string; // Change to 'number' if your IDs are numeric
-}
-
-const ReviewSection = ({ propertyId }: ReviewSectionProps) => {
-  // 3. Type the state so TS knows 'reviews' is an array of 'Review' objects
+export default function ReviewSection({ propertyId }: { propertyId: string }) {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axios.get(`/api/properties/${propertyId}/reviews`);
-        setReviews(response.data);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const controller = new AbortController();
 
-    fetchReviews();
+    async function fetchReviews() {
+      try {
+        const response = await fetch(`/api/properties/${encodeURIComponent(propertyId)}/reviews`, { signal: controller.signal });
+        if (!response.ok) throw new Error(`Review request failed with ${response.status}`);
+        setReviews(await response.json() as Review[]);
+        setStatus("success");
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        console.error("Unable to load reviews", error);
+        setStatus("error");
+      }
+    }
+
+    void fetchReviews();
+    return () => controller.abort();
   }, [propertyId]);
 
-  if (loading) {
-    return <p>Loading reviews...</p>;
-  }
+  if (status === "loading") return <p role="status">Loading reviews…</p>;
+  if (status === "error") return <p role="alert">Reviews are not available.</p>;
+  if (reviews.length === 0) return <p>No reviews yet.</p>;
 
-  return (
-    <div>
-      {reviews.length > 0 ? (
-        reviews.map((review) => (
-          <div key={review.id} className="border-b py-2">
-            <p>{review.comment}</p>
-          </div>
-        ))
-      ) : (
-        <p>No reviews yet.</p>
-      )}
-    </div>
-  );
-};
-
-export default ReviewSection;
+  return <div>{reviews.map((review) => <div key={review.id} className="border-b py-2"><p>{review.comment}</p></div>)}</div>;
+}
